@@ -8,6 +8,7 @@
 
 
 #import "Start.h"
+#import <Google/Analytics.h>
 @import GoogleMaps;
 
 #define         nLocalizing     0
@@ -43,6 +44,12 @@ NSMutableArray          *maPlacesLng;
     [self.locationManager startUpdatingLocation];
     
     [self initPlaces];
+}
+- (void)viewWillAppear:(BOOL)animated{
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"CM-Maps-Start"];
+    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+
 }
 //------------------------------------------------------------
 - (void)didReceiveMemoryWarning {
