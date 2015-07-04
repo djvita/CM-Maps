@@ -23,7 +23,6 @@ NSMutableArray          *maPlacesSnippet;
 NSMutableArray          *maPlacesLat;
 NSMutableArray          *maPlacesLng;
 
-
 @implementation Start {
     GMSMapView          *mapView;
     GMSMarker           *markerLocation;
@@ -52,10 +51,10 @@ NSMutableArray          *maPlacesLng;
 }
 //------------------------------------------------------------
 - (void)initPlaces {
-    maPlacesLat     = [[NSMutableArray alloc] initWithObjects: @"20.674815", @"20.710549", nil];
-    maPlacesLng     = [[NSMutableArray alloc] initWithObjects: @"-103.387295", @"-103.412525", nil];
-    maPlacesTitle   = [[NSMutableArray alloc] initWithObjects: @"Minerva", @"Andares", nil];
-    maPlacesSnippet = [[NSMutableArray alloc] initWithObjects: @"Av Vallarta", @"Zapopan", nil];
+    maPlacesLat     = [[NSMutableArray alloc] initWithObjects: @"20.674815", @"20.710549",@"20.677541",@"20.682093", nil];
+    maPlacesLng     = [[NSMutableArray alloc] initWithObjects: @"-103.387295", @"-103.412525",@"-103.432751",@"-103.462570", nil];
+    maPlacesTitle   = [[NSMutableArray alloc] initWithObjects: @"Minerva", @"Andares", @"Galerías", @"Omnilife", nil];
+    maPlacesSnippet = [[NSMutableArray alloc] initWithObjects: @"Av Vallarta", @"Zapopan",@"Fashion Mall", @"Chivas", nil];
 }
 /**********************************************************************************************/
 #pragma mark - Maps methods
@@ -64,10 +63,12 @@ NSMutableArray          *maPlacesLng;
     [mapView removeFromSuperview];
     camera                      = [GMSCameraPosition cameraWithLatitude:mlatitude longitude:mlongitude zoom:14.0];
     mapView                     = [GMSMapView mapWithFrame:CGRectZero camera:camera];
-    mapView.frame               = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height-20);
+    mapView.frame               = CGRectMake(0, 60, self.view.frame.size.width, self.view.frame.size.height-60);
     mapView.myLocationEnabled   = YES;
     
     [self.view addSubview:mapView];
+    [self.view bringSubviewToFront:self.lblName];
+    [self.view bringSubviewToFront:self.lblCountry];
 }
 //------------------------------------------------------------
 - (void) paintMarker {
@@ -75,7 +76,7 @@ NSMutableArray          *maPlacesLng;
     marker.position         = camera.target;
     marker.title            = @"UAG";
     marker.snippet          = @"Clase de Maestría";
-    marker.appearAnimation = kGMSMarkerAnimationPop;
+    marker.appearAnimation  = kGMSMarkerAnimationPop;
     marker.map = mapView;
     
     CLLocationCoordinate2D position;
@@ -87,6 +88,7 @@ NSMutableArray          *maPlacesLng;
         NSLog(@"Marker lat %f, long %f", lat, lng);
         position                        = CLLocationCoordinate2DMake(lat, lng);
         markerLocation                  = [GMSMarker markerWithPosition:position];
+        markerLocation.icon             = [GMSMarker markerImageWithColor:[UIColor greenColor]];
         markerLocation.title            = maPlacesTitle[i];
         markerLocation.snippet          = maPlacesSnippet[i];
         markerLocation.appearAnimation  = kGMSMarkerAnimationPop;
@@ -108,7 +110,11 @@ NSMutableArray          *maPlacesLng;
             NSString *country  = [placemark country];
             NSString *countryCode = [placemark ISOcountryCode];
             NSLog(@"name is %@ and locality is %@ and administrative area is %@ and country is %@ and country code %@", addressName, city, administrativeArea, country, countryCode);
+            self.lblCountry.text = country;
+            self.lblName.text = addressName;
+            self.lblName.adjustsFontSizeToFitWidth = YES;
         }
+        
         mlatitude = self.locationManager.location.coordinate.latitude;
         mlongitude = self.locationManager.location.coordinate.longitude;
         NSLog(@"mlatitude = %f", mlatitude);
